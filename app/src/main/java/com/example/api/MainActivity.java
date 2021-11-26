@@ -3,15 +3,11 @@ package com.example.api;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,17 +20,19 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView img;
-    String path;
+    TextView txt;
+    Button btn;
+    String futureJokeString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        img = findViewById(R.id.image);
+        txt = findViewById(R.id.txtJoke);
+        btn = findViewById(R.id.btnClick);
 
-        new JokeLoad().execute();
+        btn.setOnClickListener(view -> new JokeLoad().execute());
     }
 
     private class JokeLoad extends AsyncTask<Void, Void, Void>
@@ -46,7 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 JSONObject jsonObject = new JSONObject(jsonString);
-                path = jsonObject.getString("icon_url");
+                futureJokeString = String.format("%s\n%s\n%s\n%s\n%s\n%s",
+                        jsonObject.getString("created_at"), jsonObject.getString("icon_url"),
+                        jsonObject.getString("id"), jsonObject.getString("updated_at"),
+                        jsonObject.getString("url"), jsonObject.getString("value"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -55,11 +56,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        protected  void onPreExecute()
+        {
+            super.onPreExecute();
+
+            futureJokeString = "";
+            txt.setText("Загрузка...");
+        }
+
+        @Override
         protected void onPostExecute(Void aVoid)
         {
             super.onPostExecute(aVoid);
 
-            Glide.with(MainActivity.this).load(path).into(img);
+            if (!futureJokeString.equals(""))
+            {
+                txt.setText(futureJokeString);
+            }
         }
     }
 

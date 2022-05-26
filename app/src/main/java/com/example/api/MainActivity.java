@@ -1,11 +1,9 @@
 package com.example.api;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -19,7 +17,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-
     TextView txt;
     Button btn;
     String futureJokeString;
@@ -35,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(view -> new JokeLoad().execute());
     }
 
-    private class JokeLoad extends AsyncTask<Void, Void, Void>
-    {
+    private class JokeLoad extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             String hrefAPI = "https://api.chucknorris.io/jokes/random";
@@ -44,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 JSONObject jsonObject = new JSONObject(jsonString);
+
                 futureJokeString = String.format("%s\n%s\n%s\n%s\n%s\n%s",
                         jsonObject.getString("created_at"), jsonObject.getString("icon_url"),
                         jsonObject.getString("id"), jsonObject.getString("updated_at"),
@@ -56,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected  void onPreExecute()
-        {
+        protected  void onPreExecute() {
             super.onPreExecute();
 
             futureJokeString = "";
@@ -65,12 +61,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid)
-        {
+        protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            if (!futureJokeString.equals(""))
-            {
+            if (!futureJokeString.equals("")) {
                 txt.setText(futureJokeString);
             }
         }
@@ -83,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             URL url = new URL(href);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK);
-            {
+
+            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
                 data = bufferedReader.readLine();
                 urlConnection.disconnect();
